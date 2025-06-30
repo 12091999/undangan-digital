@@ -14,60 +14,67 @@ const sidebarItems = [
     title: "Home",
     icon: <LayoutGrid />,
     isActive: true,
+    roles: ['User', 'Admin'] // Bisa diakses semua role
   },
   {
     title: "Templates",
     icon: <FileSearch />,
+    roles: ['User', 'Admin'] // Bisa diakses semua role
   },
   {
     title: "Files",
     icon: <FileText />,
     items: [
-      { title: "Upload Your Data", url: "#" },
-      { title: "Foto", url: "#", badge: "5" },
-      { title: "Music", url: "#" },
-      { title: "Calendar", url: "#" },
+      { title: "Upload Your Data", url: "#", roles: ['User', 'Admin'] },
+      { title: "Foto", url: "#", badge: "5", roles: ['User', 'Admin'] },
+      { title: "Music", url: "#", roles: ['User', 'Admin'] },
+      { title: "Calendar", url: "#", roles: ['User', 'Admin'] },
     ],
+    roles: ['User', 'Admin'] // Bisa diakses semua role
   },
   {
     title: "About",
     icon: <Layers />,
     badge: "Pro",
     items: [
-      { title: "My Portfolio", url: "/portfolio", badge: "Updated" },
-      { title: "Team", url: "#" },
-      { title: "Address", url: "#" },
+      { title: "My Portfolio", url: "/portfolio", badge: "Updated", roles: ['User', 'Admin'] },
+      { title: "Team", url: "#", roles: ['User', 'Admin'] },
+      { title: "Address", url: "#", roles: ['User', 'Admin'] },
     ],
+    roles: ['User', 'Admin'] // Bisa diakses semua role
   },
   {
     title: "Contact",
     icon: <BookOpen />,
     items: [
-      { title: "CV", url: "#" },
-      { title: "Website", url: "#" },
-      { title: "Office", url: "#" },
-      { title: "Maps", url: "#" },
+      { title: "CV", url: "#", roles: ['User', 'Admin'] },
+      { title: "Website", url: "#", roles: ['User', 'Admin'] },
+      { title: "Office", url: "#", roles: ['User', 'Admin'] },
+      { title: "Maps", url: "#", roles: ['User', 'Admin'] },
     ],
+    roles: ['User', 'Admin'] // Bisa diakses semua role
   },
   {
     title: "Community",
     icon: <Users />,
     items: [
-      { title: "Explore", url: "#" },
-      { title: "Following", url: "#" },
-      { title: "Challenges", url: "#" },
-      { title: "Events", url: "#" },
+      { title: "Explore", url: "#", roles: ['Admin'] },
+      { title: "Following", url: "#", roles: ['Admin'] },
+      { title: "Challenges", url: "#", roles: ['Admin'] },
+      { title: "Events", url: "#", roles: ['Admin'] },
     ],
+    roles: ['Admin'] // Hanya Admin yang bisa akses
   },
   {
     title: "Resources",
     icon: <Bookmark />,
     items: [
-      { title: "Stock Photos", url: "#" },
-      { title: "Fonts", url: "#" },
-      { title: "Icons", url: "#" },
-      { title: "Templates", url: "#" },
+      { title: "Stock Photos", url: "#", roles: ['User', 'Admin'] },
+      { title: "Fonts", url: "#", roles: ['User', 'Admin'] },
+      { title: "Icons", url: "#", roles: ['User', 'Admin'] },
+      { title: "Templates", url: "#", roles: ['User', 'Admin'] },
     ],
+    roles: ['User', 'Admin'] // Bisa diakses semua role
   },
 ];
 
@@ -75,14 +82,44 @@ interface SidebarProps {
   sidebarOpen: boolean;
   mobileMenuOpen: boolean;
   onMobileMenuToggle: (isOpen: boolean) => void;
+  role?: 'User' | 'Admin'; // Added role prop
 }
 
 export default function Sidebar({
   sidebarOpen,
   mobileMenuOpen,
-  onMobileMenuToggle
+  onMobileMenuToggle,
+  role = 'User' // Default to 'User' if not provided
 }: SidebarProps) {
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+
+  // Filter sidebar items based on role
+  const filterItemsByRole = (items: any[], userRole: 'User' | 'Admin') => {
+    return items.filter(item => {
+      // Cek apakah item ini boleh diakses oleh role user
+      const hasAccess = item.roles?.includes(userRole) ?? true;
+
+      if (!hasAccess) return false;
+
+      // Jika item punya sub-items, filter juga sub-itemsnya
+      if (item.items) {
+        const filteredSubItems = item.items.filter((subItem: any) => 
+          subItem.roles?.includes(userRole) ?? true
+        );
+        
+        // Update item dengan sub-items yang sudah difilter
+        item.items = filteredSubItems;
+        
+        // Jika setelah difilter sub-items kosong, hapus item ini juga
+        if (filteredSubItems.length === 0) return false;
+      }
+
+      return true;
+    });
+  };
+
+  // Get filtered sidebar items based on current role
+  const filteredSidebarItems = filterItemsByRole([...sidebarItems], role);
 
   // Toggle expanded state for a specific item
   const toggleExpanded = (title: string) => {
@@ -109,23 +146,23 @@ export default function Sidebar({
       <div className="px-3 py-2">
         <div className="relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input 
-            type="search" 
-            placeholder="Search..." 
-            className="w-full rounded-2xl bg-muted pl-9 pr-4 py-2" 
+          <Input
+            type="search"
+            placeholder="Search..."
+            className="w-full rounded-2xl bg-muted pl-9 pr-4 py-2"
           />
         </div>
       </div>
 
       <ScrollArea className="flex-1 px-3 py-2">
         <div className="space-y-1">
-          {sidebarItems.map((data) => (
+          {filteredSidebarItems.map((data) => (
             <div key={data.title} className="mb-2">
               <button
                 className={cn(
                   "flex w-full items-center justify-between rounded-2xl px-3 py-2 text-sm font-medium transition-colors",
-                  data.isActive 
-                    ? "bg-primary/10 text-primary" 
+                  data.isActive
+                    ? "bg-primary/10 text-primary"
                     : "hover:bg-muted text-muted-foreground hover:text-foreground",
                 )}
                 onClick={() => data.items && toggleExpanded(data.title)}
@@ -134,7 +171,7 @@ export default function Sidebar({
                   {data.icon}
                   <span>{data.title}</span>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   {data.badge && (
                     <Badge variant="outline" className="rounded-full px-2 py-0.5 text-xs">
@@ -152,7 +189,7 @@ export default function Sidebar({
                 </div>
               </button>
 
-              {data.items && expandedItems[data.title] && (
+              {/* {data.items && expandedItems[data.title] && (
                 <div className="mt-1 ml-6 space-y-1 border-l border-border pl-3">
                   {data.items.map((subItem) => (
                     <div key={subItem.title}>
@@ -161,33 +198,35 @@ export default function Sidebar({
                         className="flex items-center justify-between rounded-2xl px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                       >
                         <span>{subItem.title}</span>
-                        {/* {subItem.badge && (
+                        {subItem.badge && (
                           <Badge variant="outline" className="rounded-full px-2 py-0.5 text-xs">
                             {subItem.badge}
                           </Badge>
-                        )} */}
+                        )}
                       </a>
-                      
-                      {/* Render nested items if they exist */}
-                      {/* {subItem.items && (
-                        <div className="ml-4 mt-1 space-y-1 border-l border-border pl-3">
-                          {subItem.items.map((nestedItem) => (
-                            <a
-                              key={nestedItem.title}
-                              href={nestedItem.url}
-                              className="block rounded-2xl px-3 py-1.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-                            >
-                              {nestedItem.title}
-                            </a>
-                          ))}
-                        </div>
-                      )} */}
                     </div>
                   ))}
                 </div>
-              )}
+              )} */}
             </div>
           ))}
+          
+          {/* Admin-only Admin Panel item */}
+          {role === 'Admin' && (
+            <div className="mb-2">
+              <button
+                className={cn(
+                  "flex w-full items-center justify-between rounded-2xl px-3 py-2 text-sm font-medium transition-colors",
+                  "hover:bg-muted text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <Settings className="h-5 w-5" />
+                  <span>Admin Panel</span>
+                </div>
+              </button>
+            </div>
+          )}
         </div>
       </ScrollArea>
 
@@ -197,7 +236,7 @@ export default function Sidebar({
             <Settings className="h-5 w-5" />
             <span>Settings</span>
           </button>
-          
+
           <button className="flex w-full items-center justify-between rounded-2xl px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
             <div className="flex items-center gap-3">
               <Avatar className="h-6 w-6">
@@ -207,7 +246,7 @@ export default function Sidebar({
               <span>W.O</span>
             </div>
             <Badge variant="outline" className="text-xs">
-              Pro
+              {role} {/* Show user role */}
             </Badge>
           </button>
         </div>
@@ -219,9 +258,9 @@ export default function Sidebar({
     <div>
       {/* Mobile menu overlay */}
       {mobileMenuOpen && (
-        <div 
-          className="fixed inset-0 z-40 bg-black/50 md:hidden" 
-          onClick={() => onMobileMenuToggle(false)} 
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={() => onMobileMenuToggle(false)}
         />
       )}
 
@@ -243,9 +282,9 @@ export default function Sidebar({
                 <p className="text-xs text-muted-foreground">The WO APP</p>
               </div>
             </div>
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => onMobileMenuToggle(false)}
               className="h-8 w-8"
             >

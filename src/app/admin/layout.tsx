@@ -59,7 +59,7 @@ export default function RootLayout({
             />
 
             {/* Sidebar Component */}
-            <Sidebar sidebarOpen={sidebarOpen} mobileMenuOpen={mobileMenuOpen} onMobileMenuToggle={handleMobileMenuToggle} />
+            <Sidebar sidebarOpen={sidebarOpen} mobileMenuOpen={mobileMenuOpen} onMobileMenuToggle={handleMobileMenuToggle} role="Admin" />
 
             {/* Main Content */}
             <div className={cn("min-h-screen transition-all duration-300 ease-in-out", sidebarOpen ? "md:pl-64" : "md:pl-0")}>
