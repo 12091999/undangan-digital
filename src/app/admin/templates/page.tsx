@@ -29,19 +29,19 @@ const templates: Template[] = [
     },
     {
         id: 4,
-        name: "Corporate Event",
+        name: "Fall Event",
         description: "Professional template for business events.",
         imageUrl: "/images/template3.jpg",
     },
     {
         id: 5,
-        name: "Corporate Event",
+        name: "Bride Event",
         description: "Professional template for business events.",
         imageUrl: "/images/template3.jpg",
     },
     {
         id: 6,
-        name: "Corporate Event",
+        name: "Groom Event",
         description: "Professional template for business events.",
         imageUrl: "/images/template3.jpg",
     },
