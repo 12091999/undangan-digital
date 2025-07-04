@@ -56,7 +56,7 @@ const sidebarItems = [
     title: "Dashboard",
     icon: <LayoutDashboard />,
     items: [
-      { title: "Explore", url: "./explore", roles: ['Admin'] },
+      { title: "Explore", url: "./explore.tsx", roles: ['Admin'] },
       { title: "Following", url: "#", roles: ['Admin'] },
       { title: "Challenges", url: "#", roles: ['Admin'] },
       { title: "Events", url: "#", roles: ['Admin'] },
