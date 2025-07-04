@@ -148,6 +148,7 @@ const Explore: React.FC = () => {
                             title={item.title}
                             description={item.description}
                             image={item.image}
+                            ispremium={selectedCategory === "Premium"}
                         />
                     ))}
                 </div>
