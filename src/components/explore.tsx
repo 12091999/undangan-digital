@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import { FaSearch, FaRegStar, FaRegClock } from "react-icons/fa";
 
 const categories = [
@@ -102,18 +103,20 @@ const ExploreCard: React.FC<{
         <div className="p-4">
             <h3 className="font-bold text-lg">{title}</h3>
             <p className="text-gray-600 text-sm mt-1">{description}</p>
-            {ispremium && (
-                <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded mt-2">
-                    Sign Up For Premium
-                </span>
+            {ispremium ? (
+                <Link href="/register">
+                    <button className="mt-3 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition text-sm w-full">
+                        Sign Up
+                    </button>
+                </Link>
+            ) : (
+                <button className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm w-full">
+                    Preview
+                </button>
             )}
-            <button className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm">
-                Preview
-            </button>
         </div>
     </div>
 );
-
 const Explore: React.FC = () => {
     const [selectedCategory, setSelectedCategory] = React.useState("All");
 
