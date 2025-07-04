@@ -1,13 +1,14 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { FaSearch, FaRegStar, FaRegClock } from "react-icons/fa";
+import { FaSearch, FaRegStar, FaRegClock, FaHome } from "react-icons/fa";
 
 const categories = [
     { name: "All", icon: <FaSearch /> },
     { name: "Popular", icon: <FaRegStar /> },
     { name: "Recent", icon: <FaRegClock /> },
     { name: "Premium", icon: <FaRegStar /> },
+    { name: "Back", icon: <FaHome />, url: "/admin/page" },
 ];
 
 const items = [
@@ -75,20 +76,38 @@ const Sidebar: React.FC<{
 }> = ({ selected, onSelect }) => (
     <aside className="w-60 bg-white border-r h-full p-6 flex flex-col gap-4">
         <h2 className="text-xl font-bold mb-4">Explore</h2>
-        {categories.map((cat) => (
-            <button
-                key={cat.name}
-                className={`flex items-center gap-3 px-3 py-2 rounded transition ${
-                    selected === cat.name
-                        ? "bg-blue-100 text-blue-700 font-semibold"
-                        : "hover:bg-gray-100"
-                }`}
-                onClick={() => onSelect(cat.name)}
-            >
-                {cat.icon}
-                {cat.name}
-            </button>
-        ))}
+        {categories.map((cat) =>
+            cat.url ? (
+                <Link href={cat.url} key={cat.name}>
+                    <button
+                        className={`flex items-center gap-3 px-3 py-2 rounded transition w-full ${
+                            selected === cat.name
+                                ? "bg-blue-100 text-blue-700 font-semibold"
+                                : "hover:bg-gray-100"
+                        }`}
+                        onClick={() => onSelect(cat.name)}
+                        type="button"
+                    >
+                        {cat.icon}
+                        {cat.name}
+                    </button>
+                </Link>
+            ) : (
+                <button
+                    key={cat.name}
+                    className={`flex items-center gap-3 px-3 py-2 rounded transition w-full ${
+                        selected === cat.name
+                            ? "bg-blue-100 text-blue-700 font-semibold"
+                            : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => onSelect(cat.name)}
+                    type="button"
+                >
+                    {cat.icon}
+                    {cat.name}
+                </button>
+            )
+        )}
     </aside>
 );
 
