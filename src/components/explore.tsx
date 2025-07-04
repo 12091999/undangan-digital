@@ -1,11 +1,12 @@
+"use client";
 import React from "react";
-import { FaSearch, FaFilter, FaRegStar, FaRegClock } from "react-icons/fa";
+import { FaSearch, FaRegStar, FaRegClock } from "react-icons/fa";
 
 const categories = [
     { name: "All", icon: <FaSearch /> },
     { name: "Popular", icon: <FaRegStar /> },
     { name: "Recent", icon: <FaRegClock /> },
-    { name: "Filtered", icon: <FaFilter /> },
+    { name: "Premium", icon: <FaRegStar /> },
 ];
 
 const items = [
@@ -37,6 +38,34 @@ const items = [
         image: "https://source.unsplash.com/400x200/?baby,shower",
         category: "Popular",
     },
+    {
+        id: 5,
+        title: "Graduation Ceremony",
+        description: "Celebrate your graduation with this elegant template.",
+        image: "https://source.unsplash.com/400x200/?graduation,ceremony",
+        category: "Recent",
+    },
+    {
+        id: 6,
+        title: "Premium 1",
+        description: "Availabel 7 Day's For 3 Design Card.",
+        image: "https://source.unsplash.com/400x200/?holiday,party",
+        category: "Premium",
+    },
+    {
+        id: 7,
+        title: "Premium 2",
+        description: "Availabel 1 Month For 4 Design Card.",
+        image: "https://source.unsplash.com/400x200/?holiday,party",
+        category: "Premium",
+    },
+    {
+        id: 8,
+        title: "Premium 3",
+        description: "Free all Template Card Include( Free Design, Guest Name, Family Name, And Maps Location).",
+        image: "https://source.unsplash.com/400x200/?holiday,party",
+        category: "Premium",
+    }
 ];
 
 const Sidebar: React.FC<{
@@ -66,12 +95,18 @@ const ExploreCard: React.FC<{
     title: string;
     description: string;
     image: string;
-}> = ({ title, description, image }) => (
+    ispremium?: boolean;
+}> = ({ title, description, image, ispremium }) => (
     <div className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden">
         <img src={image} alt={title} className="w-full h-36 object-cover" />
         <div className="p-4">
             <h3 className="font-bold text-lg">{title}</h3>
             <p className="text-gray-600 text-sm mt-1">{description}</p>
+            {ispremium && (
+                <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded mt-2">
+                    Sign Up For Premium
+                </span>
+            )}
             <button className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm">
                 Preview
             </button>
@@ -85,6 +120,8 @@ const Explore: React.FC = () => {
     const filteredItems =
         selectedCategory === "All"
             ? items
+            : selectedCategory === "Premium"
+            ? items.filter((item) => item.category === "Premium").slice(0, 3)
             : items.filter((item) => item.category === selectedCategory);
 
     return (
