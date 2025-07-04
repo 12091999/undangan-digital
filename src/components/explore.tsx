@@ -8,7 +8,7 @@ const categories = [
     { name: "Popular", icon: <FaRegStar /> },
     { name: "Recent", icon: <FaRegClock /> },
     { name: "Premium", icon: <FaRegStar /> },
-    { name: "Back", icon: <FaHome />, url: "/admin/page" },
+    { name: "Back", icon: <FaHome />, url: "/page" },
 ];
 
 const items = [
